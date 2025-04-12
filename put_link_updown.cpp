@@ -82,9 +82,9 @@ int main(int argc, char* argv[])
   struct rtnl_link* request = rtnl_link_alloc();
   // int flag = rtnl_link_str2flags("up");
   action ? rtnl_link_set_flags(request, IFF_UP) : rtnl_link_unset_flags(request, IFF_UP);
-  int link_flags = rtnl_link_get_flags(link);
+  auto link_state = rtnl_link_get_operstate(link);
   
-  if(action != static_cast<bool>(link_flags & IFF_UP))  // logical XOR
+  if(action != static_cast<bool>(link_state & IF_OPER_UP))  // logical XOR
   {
     if(int ret; (ret = rtnl_link_change(nlsock, link, request, 0)) < 0) {
       std::println(stderr, "Error: {}.", nl_geterror(ret));

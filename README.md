@@ -60,6 +60,8 @@ In a nutshell: socket handling, sending and receiving, message construction and 
 First, you need to create a Netlink socket
 
 ```C++
+#include <netlink/socket.h>
+
 struct nl_sock* nlsock = nl_socket_alloc();
 if(!nlsock) {
   std::println(stderr, "Error: Failed to allocate Netlink socket.");
@@ -72,6 +74,9 @@ nl_socket_free(nlsock);
 Then, you can connect to any `AF_NETLINK` address with a specified protocol like `NETLINK_ROUTE` or `NETLINK_GENERIC`.
 
 ```C++
+#include <netlink/socket.h>
+#include <netlink/errno.h>
+
 if(int ret; (ret = nl_connect(nlsock, Netlink_ROUTE)) < 0) {
   std::println(stderr, "Error: {}.", nl_geterror(ret));
   std::exit(EXIT_FAILURE);
@@ -143,6 +148,9 @@ TODO
 After allocate the socket, you can connect directly and in a more semantic way to the Generic API subsystem with
 
 ```C++
+#include <netlink/socket.h>
+#include <netlink/genl/genl.h>
+
 if(genl_connect(nlsock) < 0) {
   std::println(stderr, "Error: {}.", nl_geterror(ret));
   std::exit(EXIT_FAILURE);
@@ -186,4 +194,4 @@ The `genlmsg_parse()` function will parse the Generic Netlink message and fill t
 
 ### Submodule Controller (Resolver)
 
-In the kernel there is a component called Controller that you can query in order to resolve Generic Netlink family names to their numeric identifiers. For example, with `genl_ctrl_resolve(nlsocket, "nl80211")` you can communicate directly with the kernel and query about the numeric family identifier from his name. Execute `genl-ctrl-list` from `libnl-utils` program to get the complete list of families.
+In the kernel there is a component called Controller that you can query in order to resolve Generic Netlink family names to their numeric identifiers. For example, with `genl_ctrl_resolve(nlsocket, "nl80211")` (from `<netlink/genl/ctrl.h>`) you can communicate directly with the kernel and query about the numeric family identifier from his name. Execute `genl-ctrl-list` from `libnl-utils` program to get the complete list of families.
